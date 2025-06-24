@@ -12,13 +12,12 @@ class User(AbstractUser):
     bio = models.TextField(blank=True)
     location = models.CharField(max_length=100, blank=True)
 
-    # Add these to avoid clashes
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
         blank=True,
         help_text='The groups this user belongs to.',
-        related_name="core_user_groups",  # Changed
+        related_name="core_user_groups",  
         related_query_name="user",
     )
     user_permissions = models.ManyToManyField(
@@ -26,7 +25,7 @@ class User(AbstractUser):
         verbose_name='user permissions',
         blank=True,
         help_text='Specific permissions for this user.',
-        related_name="core_user_permissions",  # Changed
+        related_name="core_user_permissions",  
         related_query_name="user",
     )
 
@@ -51,7 +50,7 @@ class Book(models.Model):
     description = models.TextField(blank=True)
     cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
     book_type = models.CharField(max_length=10, choices=BOOK_TYPES, default='PHYSICAL')
-    file = models.FileField(upload_to='book_files/', blank=True, null=True)  # For ebooks/articles
+    file = models.FileField(upload_to='book_files/', blank=True, null=True) 
     available = models.BooleanField(default=True)
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='added_books')
     added_on = models.DateTimeField(auto_now_add=True)
