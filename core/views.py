@@ -12,7 +12,7 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
-from .forms import CustomUserCreationForm  # You'll need to create this
+from .forms import CustomUserCreationForm  
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
@@ -24,7 +24,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('profile')  # Make sure 'profile' is a valid URL name
+            return redirect('profile')  
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/sign_up.html', {'form': form})
@@ -92,7 +92,7 @@ def add_book(request):
             book = form.save(commit=False)
             book.added_by = request.user
             book.save()
-            form.save_m2m()  # For many-to-many relationships
+            form.save_m2m()  
             return redirect('book_list')
     else:
         form = BookForm()
