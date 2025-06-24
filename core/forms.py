@@ -16,7 +16,7 @@ User = get_user_model()
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'email')  # Add any additional fields you need   fields = ('username', 'email')  # Add any additional fields you need
+        fields = ('username', 'email') 
 from django import forms
 from .models import Book, Category
 
