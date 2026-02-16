@@ -1,83 +1,218 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full {% if request.user.is_authenticated %}dark{% endif %}">
+<html lang="en" class="h-full scroll-smooth">
+
 <head>
     <link rel="shortcut icon" href="templates/b.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BookSwap{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    },
                     colors: {
                         primary: {
-                            light: '#3B82F6',
-                            dark: '#2563EB'
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        secondary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                            950: '#4a044e',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
                         }
                     }
                 }
             }
         }
     </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .dark .glass-nav {
+            background: rgba(17, 24, 39, 0.8);
+            border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+        }
+    </style>
 </head>
-<body class="h-full bg-gray-50 dark:bg-gray-900">
-    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
+
+<body class="h-full bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300">
+    <nav class="glass-nav fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <a href="{% url 'index' %}" class="text-2xl font-bold text-primary-light dark:text-primary-dark">BookSwap</a>
-                <div class="flex items-center space-x-4">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{% url 'index' %}" class="flex items-center space-x-2 group">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-primary-500/30 transition-all duration-300">
+                            B
+                        </div>
+                        <span
+                            class="text-2xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300">
+                            BookSwap
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-1">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'profile' %}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-user mr-1"></i> Profile
-                        </a>
-                        <a href="{% url 'book_list' %}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-book mr-1"></i> Books
-                        </a>
-                        <a href="{% url 'logout' %}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-sign-out-alt mr-1"></i> Logout
-                        </a>
+                    <a href="{% url 'book_list' %}"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200">
+                        <i class="fas fa-book mr-2"></i>Books
+                    </a>
+                    <a href="{% url 'profile' %}"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200">
+                        <i class="fas fa-user mr-2"></i>Profile
+                    </a>
+                    <form method="post" action="{% url 'logout' %}" class="ml-2">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
+                            Logout
+                        </button>
+                    </form>
                     {% else %}
-                        <a href="{% url 'login' %}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-sign-in-alt mr-1"></i> Login
-                        </a>
-                        <a href="{% url 'signup' %}" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <i class="fas fa-user-plus mr-1"></i> Sign Up
-                        </a>
+                    <a href="{% url 'login' %}"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200">
+                        Login
+                    </a>
+                    <a href="{% url 'signup' %}"
+                        class="ml-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 shadow-lg shadow-primary-600/20 hover:shadow-primary-600/40 transition-all duration-200 transform hover:-translate-y-0.5">
+                        Sign Up
+                    </a>
                     {% endif %}
-                    <button id="darkModeToggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <span class="dark:hidden"><i class="fas fa-moon"></i></span>
-                        <span class="hidden dark:inline"><i class="fas fa-sun"></i></span>
+
+                    <!-- Dark Mode Toggle -->
+                    <button id="darkModeToggle"
+                        class="ml-4 p-2.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        <span class="dark:hidden"><i class="fas fa-moon text-lg"></i></span>
+                        <span class="hidden dark:inline"><i class="fas fa-sun text-yellow-400 text-lg"></i></span>
                     </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 py-8 min-h-screen">
+    <main class="container mx-auto px-4 py-8 pt-24 min-h-screen animate-fade-in relative">
+        <!-- Background Decorations -->
+        <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+            <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary-500/10 blur-3xl"></div>
+            <div class="absolute top-40 -left-20 w-72 h-72 rounded-full bg-secondary-500/10 blur-3xl"></div>
+        </div>
+
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="bg-white dark:bg-gray-800 py-6 border-t border-gray-200 dark:border-gray-700">
-        <div class="container mx-auto px-4 text-center text-gray-600 dark:text-gray-300">
-            <p>© 2025 BookSwap. All rights reserved.</p>
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-base text-gray-500 dark:text-gray-400">
+                    &copy; 2025 BookSwap. Crafted with <i class="fas fa-heart text-red-500 mx-1"></i> for book lovers.
+                </p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Dark mode toggle
-        document.getElementById('darkModeToggle').addEventListener('click', function() {
-            document.documentElement.classList.toggle('dark');
-            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
-        });
+        // Dark mode logic
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
 
-        // Check for saved dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark');
+        // Check local storage or system preference
+        if (localStorage.getItem('darkMode') === 'true' ||
+            (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
         }
+
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('darkMode', html.classList.contains('dark'));
+        });
     </script>
 </body>
+
 </html>

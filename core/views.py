@@ -1,22 +1,10 @@
-from time import timezone
-import datetime
-from django.shortcuts import render
-from datetime import timedelta
-# Create your views here.
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Book, BorrowRecord
-from .forms import BookSearchForm
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.shortcuts import render, redirect
 from django.utils import timezone
-
-from .forms import CustomUserCreationForm  
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
-from .forms import CustomUserCreationForm
+from datetime import timedelta
+from .models import Book, BorrowRecord, Category
+from .forms import BookSearchForm, CustomUserCreationForm, BookForm
 
 def signup(request):
     if request.method == 'POST':
@@ -61,31 +49,15 @@ def profile(request):
     })
 
 
-@login_required
-def borrow_book(request, book_id):
-    book = Book.objects.get(id=book_id)
-    if book.available:
-        BorrowRecord.objects.create(
-            user=request.user,
-            book=book,
-            return_date=timezone.now() + timezone.timedelta(days=14)
-        )
-        book.available = False
-        book.save()
-    return redirect('profile')
-
-
 def ebooks(request):
     ebooks = Book.objects.filter(book_type='EBOOK')
     return render(request, 'ebooks.html', {'ebooks': ebooks})
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import Book, BorrowRecord, Category
-from .forms import BookForm, CategoryForm
 
 @login_required
 def add_book(request):
+    if not request.user.is_creator:
+        return redirect('index')
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
@@ -121,9 +93,9 @@ def borrow_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if book.available:
         BorrowRecord.objects.create(
-            book=book,
             user=request.user,
-            return_date=timezone.now() + timezone.timedelta(days=14)
+            book=book,
+            return_date=timezone.now() + timedelta(days=14)
         )
         book.available = False
         book.save()
@@ -138,6 +110,5 @@ def return_book(request, pk):
         record.book.available = True
         record.book.save()
     return redirect('profile')
-from django.shortcuts import render
-from .models import Book
+
 

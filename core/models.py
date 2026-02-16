@@ -1,16 +1,10 @@
 from django.db import models
-
-# Create your models here.
 from django.contrib.auth.models import AbstractUser
-from django.db import models
-
-from django.contrib.auth.models import AbstractUser
-from django.db import models
-
 
 class User(AbstractUser):
     bio = models.TextField(blank=True)
     location = models.CharField(max_length=100, blank=True)
+    is_creator = models.BooleanField(default=False, help_text="Designates whether this user can upload books.")
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -31,12 +25,6 @@ class User(AbstractUser):
 
     class Meta:
         app_label = 'core'
-
-
-
-from django.db import models
-from django.contrib.auth import get_user_model
-
 
 class Book(models.Model):
     BOOK_TYPES = [

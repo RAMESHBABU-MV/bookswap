@@ -1,81 +1,174 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-    <h2 class="text-2xl font-bold mb-6 dark:text-white">Add New Book</h2>
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8 text-center">
+        <h1 class="text-3xl font-display font-bold text-gray-900 dark:text-white mb-2">Share a Book</h1>
+        <p class="text-gray-500 dark:text-gray-400">Distribute knowledge by adding a new book to the library.</p>
+    </div>
 
-    <form method="post" enctype="multipart/form-data" class="space-y-6">
-        {% csrf_token %}
+    <div
+        class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="p-8">
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
 
-        {% if form.errors %}
-        <div class="p-4 mb-4 bg-red-100 text-red-700 rounded-lg">
-            {% for field, errors in form.errors.items %}
-                {% for error in errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
-                {{ form.title }}
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Author</label>
-                {{ form.author }}
-            </div>
-
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-                {{ form.description }}
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Book Type</label>
-                {{ form.book_type }}
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cover Image</label>
-                {{ form.cover_image }}
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">File (for ebooks/articles)</label>
-                {{ form.file }}
-            </div>
-
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Categories</label>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {{ form.categories }}
+                {% if form.errors %}
+                <div class="p-4 mb-6 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-r-lg">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800 dark:text-red-200">There were errors with your
+                                submission</h3>
+                            <div class="mt-2 text-sm text-red-700 dark:text-red-300">
+                                <ul class="list-disc pl-5 space-y-1">
+                                    {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+                {% endif %}
 
-        <div class="flex justify-end space-x-4 pt-4">
-            <a href="{% url 'book_list' %}" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                Cancel
-            </a>
-            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                Add Book
-            </button>
+                <div class="space-y-6">
+                    <!-- Title and Author -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Book
+                                Title</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-heading text-gray-400"></i>
+                                </div>
+                                {{ form.title }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Author</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-user-edit text-gray-400"></i>
+                                </div>
+                                {{ form.author }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label
+                            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                        {{ form.description }}
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Brief summary of the book's content.
+                        </p>
+                    </div>
+
+                    <!-- Type and Categories -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Format</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-filter text-gray-400"></i>
+                                </div>
+                                {{ form.book_type }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label
+                                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Categories</label>
+                            <div
+                                class="h-32 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-700/50">
+                                {{ form.categories }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Uploads -->
+                    <div
+                        class="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-5 border border-dashed border-gray-300 dark:border-gray-600">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Cover
+                                    Image</label>
+                                <div
+                                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
+                                    <div class="space-y-1 text-center">
+                                        <i
+                                            class="fas fa-image text-gray-400 text-3xl mb-2 group-hover:text-primary-500 transition-colors"></i>
+                                        <div
+                                            class="flex text-sm text-gray-600 dark:text-gray-400 items-center justify-center">
+                                            {{ form.cover_image }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Digital
+                                    File <span class="text-xs font-normal text-gray-500">(PDF, EPUB)</span></label>
+                                <div
+                                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
+                                    <div class="space-y-1 text-center">
+                                        <i
+                                            class="fas fa-file-alt text-gray-400 text-3xl mb-2 group-hover:text-primary-500 transition-colors"></i>
+                                        <div
+                                            class="flex text-sm text-gray-600 dark:text-gray-400 items-center justify-center">
+                                            {{ form.file }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="pt-6 flex items-center justify-end space-x-4 border-t border-gray-100 dark:border-gray-700 mt-6">
+                    <a href="{% url 'book_list' %}"
+                        class="px-6 py-2.5 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                        class="px-8 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 transform hover:-translate-y-0.5 transition-all duration-200">
+                        <i class="fas fa-plus mr-2"></i> Publish Book
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
-<style>
-    input, select, textarea {
-        @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white;
+<style type="text/tailwindcss">
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group textarea,
+    .form-group select {
+        @apply w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none shadow-sm transition-all duration-200;
     }
-    textarea {
-        @apply min-h-[100px];
+    
+    /* Specific adjustment for inputs that don't need padding-left (if any without icon) */
+    .form-group textarea {
+        @apply pl-4 min-h-[120px] resize-y;
     }
+    
+    .form-group select {
+        @apply pl-10 cursor-pointer;
+    }
+    
+    /* File input styling overrides */
     input[type="file"] {
-        @apply border-0 p-0;
+        @apply w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-gray-600 dark:file:text-gray-200;
     }
 </style>
 {% endblock %}

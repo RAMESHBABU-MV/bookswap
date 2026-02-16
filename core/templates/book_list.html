@@ -1,54 +1,122 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto">
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold dark:text-white">Available Books</h1>
-        {% if user.is_authenticated %}
-        <a href="{% url 'add_book' %}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+<div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-3xl font-display font-bold text-gray-900 dark:text-white">The Library</h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-2">Explore physical books available for borrowing in your
+            community.</p>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4">
+        <!-- Search -->
+        <div class="relative flex-grow">
+            <input type="text" placeholder="Search books..."
+                class="pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none shadow-sm w-full transition-all">
+            <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+        </div>
+
+        {% if user.is_authenticated and user.is_creator %}
+        <a href="{% url 'add_book' %}"
+            class="whitespace-nowrap inline-flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl font-medium shadow-lg hover:shadow-primary-500/30 transition-all duration-200 transform hover:-translate-y-0.5">
             <i class="fas fa-plus mr-2"></i>Add Book
         </a>
         {% endif %}
     </div>
+</div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {% for book in books %}
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
-            <div class="relative">
-                <img src="{{book.cover_image.url}}" alt="{{ book.title }}" class="w-full h-48 object-cover">
-                <div class="absolute top-2 right-2">
-                    <span class="px-2 py-1 text-xs rounded-full
-                                {% if book.book_type == 'PHYSICAL' %}bg-green-100 text-green-800
-                                {% elif book.book_type == 'EBOOK' %}bg-blue-100 text-blue-800
-                                {% else %}bg-purple-100 text-purple-800{% endif %}">
-                        {{ book.get_book_type_display }}
-                    </span>
-                </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    {% for book in books %}
+    <div
+        class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col h-full">
+        <!-- Card Image -->
+        <a href="{% url 'book_detail' book.pk %}"
+            class="relative aspect-[2/3] overflow-hidden bg-gray-100 dark:bg-gray-700 block">
+            {% if book.cover_image %}
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            {% else %}
+            <div
+                class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+                <i class="fas fa-book fa-3x mb-2 opacity-50"></i>
+                <span class="text-xs font-medium uppercase tracking-widest opacity-50">No Cover</span>
             </div>
-            <div class="p-4">
-                <h3 class="text-lg font-semibold dark:text-white">{{ book.title }}</h3>
-                <p class="text-gray-600 dark:text-gray-300">{{ book.author }}</p>
-                <div class="mt-4 flex justify-between items-center">
-                    <a href="{% url 'book_detail' book.pk %}" class="text-primary-light dark:text-primary-dark hover:underline">
-                        View Details
-                    </a>
-                    {% if book.book_type == 'PHYSICAL' %}
-                        {% if book.available %}
-                            <span class="text-green-500 text-sm">Available</span>
-                        {% else %}
-                            <span class="text-red-500 text-sm">Borrowed</span>
-                        {% endif %}
-                    {% endif %}
-                </div>
+            {% endif %}
+
+            <!-- Type Badge -->
+            <div class="absolute top-3 right-3">
+                <span class="px-2.5 py-1 backdrop-blur-md rounded-lg text-xs font-bold shadow-sm border border-white/20
+                    {% if book.book_type == 'PHYSICAL' %}bg-green-500/90 text-white
+                    {% elif book.book_type == 'EBOOK' %}bg-blue-500/90 text-white
+                    {% else %}bg-purple-500/90 text-white{% endif %}">
+                    {{ book.get_book_type_display }}
+                </span>
+            </div>
+
+            <!-- Action Overlay -->
+            <div
+                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span
+                    class="px-4 py-2 bg-white/90 text-gray-900 rounded-full font-medium text-sm transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 backdrop-blur-sm">
+                    View Details
+                </span>
+            </div>
+        </a>
+
+        <!-- Card Content -->
+        <div class="p-5 flex flex-col flex-grow">
+            <a href="{% url 'book_detail' book.pk %}" class="block">
+                <h3
+                    class="text-lg font-bold text-gray-900 dark:text-white line-clamp-1 mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    {{ book.title }}
+                </h3>
+            </a>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center">
+                <i class="fas fa-pen-nib mr-1.5 opacity-70 text-xs"></i>
+                {{ book.author }}
+            </p>
+
+            <div
+                class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center text-xs font-medium">
+                {% if book.book_type == 'PHYSICAL' %}
+                {% if book.available %}
+                <span
+                    class="text-green-600 dark:text-green-400 flex items-center bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
+                    <i class="fas fa-check-circle mr-1.5"></i> Available
+                </span>
+                {% else %}
+                <span
+                    class="text-red-500 dark:text-red-400 flex items-center bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-full">
+                    <i class="fas fa-times-circle mr-1.5"></i> Borrowed
+                </span>
+                {% endif %}
+                {% else %}
+                <span
+                    class="text-blue-600 dark:text-blue-400 flex items-center bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-full">
+                    <i class="fas fa-cloud-download-alt mr-1.5"></i> Digital
+                </span>
+                {% endif %}
+
+                <span class="text-gray-400 dark:text-gray-500">
+                    By {{ book.added_by.username|slice:":8" }}
+                </span>
             </div>
         </div>
-        {% empty %}
-        <div class="col-span-full text-center py-12">
-            <p class="text-gray-600 dark:text-gray-300">No books available at the moment.</p>
-        </div>
-        {% endfor %}
     </div>
+    {% empty %}
+    <div class="col-span-full py-20 text-center">
+        <div class="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-info-circle text-gray-400 text-3xl"></i>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">No books found</h3>
+        <p class="text-gray-500 dark:text-gray-400 mt-2">Be the first to share a book with the community!</p>
+        {% if user.is_authenticated and user.is_creator %}
+        <a href="{% url 'add_book' %}"
+            class="mt-6 inline-block px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition">
+            Add a Book
+        </a>
+        {% endif %}
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}
-
-
